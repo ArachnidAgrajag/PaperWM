@@ -13,6 +13,9 @@ import {
 
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
+//To add delay
+const Mainloop = imports.mainloop;
+
 /**
    The currently used modules
      - tiling is the main module, responsible for tiling and workspaces
@@ -56,16 +59,21 @@ export default class PaperWM extends Extension {
     #userStylesheet = null;
 
     enable() {
-        console.log(`#PaperWM enabled`);
-
-        this.enableUserConfig();
-        this.enableUserStylesheet();
-
-        // run enable method (with extension argument on all modules)
-        this.modules.forEach(m => {
-            if (m['enable']) {
-                m.enable(this);
-            }
+        // Add a 2.2 seconds delay before enabling extension
+	    // workaround for issue caused by using hidetopbar 
+	    // known mutter bug https://gitlab.gnome.org/GNOME/mutter/-/issues/1627
+        console.log('#PaperWM Waiting to enable')
+        Mainloop.timeout_add(2200, () => {
+            console.log(`#PaperWM enabled`);
+    
+            this.enableUserConfig();
+            this.enableUserStylesheet();
+    
+            // run enable method (with extension argument on all modules)
+            this.modules.forEach(m => {
+                if (m['enable']) {
+                    m.enable(this);
+                }
         });
     }
 
