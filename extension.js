@@ -74,6 +74,7 @@ export default class PaperWM extends Extension {
                 if (m['enable']) {
                     m.enable(this);
                 }
+             });
         });
     }
 
