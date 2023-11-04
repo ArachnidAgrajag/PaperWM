@@ -15,8 +15,8 @@ import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 //To add delay
 const Mainloop = imports.mainloop;
-const DASH_TO_PANEL_UUID = "dash-to-panel@jderose9.github.com"
-let extensionSystem = Main.extensionManager
+// const DASH_TO_PANEL_UUID = "dash-to-panel@jderose9.github.com"
+// let extensionSystem = Main.extensionManager
 /**
    The currently used modules
      - tiling is the main module, responsible for tiling and workspaces
@@ -60,6 +60,24 @@ export default class PaperWM extends Extension {
     #userStylesheet = null;
 
     enable() {
+        // // Reload extension after Dash to panel loads
+	    // // workaround for issue caused by using Dash to panel Intellihide 
+	    // // known mutter bug https://gitlab.gnome.org/GNOME/mutter/-/issues/1627
+        // Mainloop.timeout_add(2200,()=>{
+        // //extensionSystem.connect('extension-state-changed', (data, extension) => {
+        // //    if (extension.uuid === DASH_TO_PANEL_UUID && extension.state === 1) { 
+        //         console.log(`#PaperWM enabled`);
+        //             this.enableUserConfig();
+        //             this.enableUserStylesheet();
+
+        //             // run enable method (with extension argument on all modules)
+        //             this.modules.forEach(m => {
+        //                 if (m['enable']) {
+        //                     m.enable(this);
+        //                 }
+        //             });  
+        // //    }
+        // });
         this.enableUserConfig();
         this.enableUserStylesheet();
         // run enable method (with extension argument on all modules)
@@ -67,24 +85,6 @@ export default class PaperWM extends Extension {
             if (m['enable']) {
                 m.enable(this);
             }
-        });
-        // Reload extension after Dash to panel loads
-	    // workaround for issue caused by using Dash to panel Intellihide 
-	    // known mutter bug https://gitlab.gnome.org/GNOME/mutter/-/issues/1627
-        Mainloop.timeout_add(2200,()=>{
-        //extensionSystem.connect('extension-state-changed', (data, extension) => {
-        //    if (extension.uuid === DASH_TO_PANEL_UUID && extension.state === 1) { 
-                console.log(`#PaperWM enabled`);
-                    this.enableUserConfig();
-                    this.enableUserStylesheet();
-
-                    // run enable method (with extension argument on all modules)
-                    this.modules.forEach(m => {
-                        if (m['enable']) {
-                            m.enable(this);
-                        }
-                    });  
-        //    }
         });
         
     }
