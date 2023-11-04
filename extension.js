@@ -59,13 +59,20 @@ export default class PaperWM extends Extension {
     #userStylesheet = null;
 
     enable() {
+		this.enableUserConfig();
+		this.enableUserStylesheet();
+	    // run enable method (with extension argument on all modules)
+		this.modules.forEach(m => {
+			if (m['enable']) {
+		   		m.enable(this);
+			}
+	    });
         // Add a 2.2 seconds delay before enabling extension
 	    // workaround for issue caused by using hidetopbar 
 	    // known mutter bug https://gitlab.gnome.org/GNOME/mutter/-/issues/1627
         console.log('#PaperWM Waiting to enable')
         Mainloop.timeout_add(2200, () => {
             console.log(`#PaperWM enabled`);
-    
             this.enableUserConfig();
             this.enableUserStylesheet();
     
@@ -74,7 +81,7 @@ export default class PaperWM extends Extension {
                 if (m['enable']) {
                     m.enable(this);
                 }
-             });
+            });
         });
     }
 
