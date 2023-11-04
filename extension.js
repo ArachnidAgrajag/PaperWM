@@ -15,7 +15,8 @@ import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 //To add delay
 const Mainloop = imports.mainloop;
-
+const DASH_TO_PANEL_UUID = "dash-to-panel@jderose9.github.com"
+let extensionSystem = Main.extensionManager
 /**
    The currently used modules
      - tiling is the main module, responsible for tiling and workspaces
@@ -59,30 +60,32 @@ export default class PaperWM extends Extension {
     #userStylesheet = null;
 
     enable() {
-		this.enableUserConfig();
-		this.enableUserStylesheet();
-	    // run enable method (with extension argument on all modules)
-		this.modules.forEach(m => {
-			if (m['enable']) {
-		   		m.enable(this);
-			}
-	    });
-        // Add a 2.2 seconds delay before enabling extension
-	    // workaround for issue caused by using hidetopbar 
-	    // known mutter bug https://gitlab.gnome.org/GNOME/mutter/-/issues/1627
-        console.log('#PaperWM Waiting to enable')
-        Mainloop.timeout_add(2200, () => {
-            console.log(`#PaperWM enabled`);
-            this.enableUserConfig();
-            this.enableUserStylesheet();
-    
-            // run enable method (with extension argument on all modules)
-            this.modules.forEach(m => {
-                if (m['enable']) {
-                    m.enable(this);
-                }
-            });
+        this.enableUserConfig();
+        this.enableUserStylesheet();
+        // run enable method (with extension argument on all modules)
+        this.modules.forEach(m => {
+            if (m['enable']) {
+                m.enable(this);
+            }
         });
+        // Reload extension after Dash to panel loads
+	    // workaround for issue caused by using Dash to panel Intellihide 
+	    // known mutter bug https://gitlab.gnome.org/GNOME/mutter/-/issues/1627
+        //extensionChangedHandler = extensionSystem.connect('extension-state-changed', (data, extension) => {
+        if (extension.uuid === DASH_TO_PANEL_UUID && extension.state === 1) {
+        //Mainloop.timeout_add(2200,()=>{
+            console.log(`#PaperWM enabled`);
+                this.enableUserConfig();
+                this.enableUserStylesheet();
+
+                // run enable method (with extension argument on all modules)
+                this.modules.forEach(m => {
+                    if (m['enable']) {
+                        m.enable(this);
+                    }
+                });  
+        //});
+        } 
     }
 
     disable() {
